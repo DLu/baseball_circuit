@@ -28,3 +28,6 @@ def lookup_by_name(name):
 
 def get_mlb_num(tla):
     return get_team_data()[tla]['MLB_NUM']
+
+def get_team_name(tla):
+    return get_team_data()[tla]['Name']

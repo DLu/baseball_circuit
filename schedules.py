@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import calendar
 import urllib2
 import csv
+import os.path
 from teams import *
 
 YEAR = 2015
@@ -55,12 +56,45 @@ def read_schedule(file_obj, remove_spring=True):
         
     return games
 
-def get_filename(number, year):
+def get_url(number, year):
     return 'http://mlb.mlb.com/soa/ical/schedule.csv?home_team_id=%d&season=%d'%(number, year)
+    
+def get_filename(team, year):
+    return 'schedules/%d_%s.csv'%(year, team)
 
-def get_games(number, year):
-    response = urllib2.urlopen( get_filename(number, year) )
+def download_games(team, year):
+    print 'Downloading %s %d Schedule...'%( get_team_name(team), year)
+    number = get_mlb_num(team)
+    response = urllib2.urlopen( get_url(number, year) )
     return read_schedule(response)
+
+def read_file(filename):
+    games = []
+    with open(filename) as f:
+        for row in csv.reader(f):
+            games.append( tuple(row) )
+    return games
+
+def write_file(filename, games):
+    with open(filename, 'w') as f:
+        out = csv.writer(f)
+        for x in games:
+            out.writerow(x)
+            
+def get_schedule(team, year):
+    filename = get_filename(team, year)
+    if os.path.exists(filename):
+        return read_file(filename)
+    else:
+        games = download_games(team, year)
+        write_file( filename, games)
+        return games
+        
+def get_full_schedule(year):
+    schedule = []
+    for team in all_teams():
+        schedule += get_schedule(team)
+    return schedule    
 
 if __name__=='__main__':
     import argparse    
@@ -72,4 +106,5 @@ if __name__=='__main__':
         args.teams = all_teams()
     
     for team in args.teams:
-        print get_games( get_mlb_num(team), args.year )
+        print team
+        print get_schedule( team, args.year)
