@@ -9,7 +9,7 @@ def read_distance_data():
     DISTANCES = collections.defaultdict(dict)
     TIMES = collections.defaultdict(dict)
     
-    for x in csv.DictReader(open('distances.csv'), delimiter='\t'):
+    for x in csv.DictReader(open('travel.csv'), delimiter='\t'):
         t1 = x['TEAM1']
         t2 = x['TEAM2']
         

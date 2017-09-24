@@ -72,6 +72,7 @@ def read_file(filename):
     games = []
     with open(filename) as f:
         for row in csv.reader(f):
+            row[0] = int(row[0])
             games.append( tuple(row) )
     return games
 
