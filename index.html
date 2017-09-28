@@ -1,0 +1,32 @@
+<script src="data.js"></script>
+<script>
+function get_cities(start_time, start_city, visited=[])
+{
+    var i = 0;
+    while (SCHEDULE[i][0] < start_time)
+    {
+        i++;
+    }
+    var starts = {};
+    var needed = 30 - visited.length;
+    while (Object.keys(starts).length < needed)
+    {
+        var team = SCHEDULE[i][2];
+        if(starts[team] || visited[team])
+        {
+            i++;
+            continue;
+        }
+        if (start_city && start_time + TRAVEL[start_city][team] > SCHEDULE[i][0])
+        {
+            i++;
+            continue;
+        }
+        starts[team] = SCHEDULE[i];
+        i++;
+    }
+    return starts;
+}
+console.log(get_cities(0));
+</script>
+X
